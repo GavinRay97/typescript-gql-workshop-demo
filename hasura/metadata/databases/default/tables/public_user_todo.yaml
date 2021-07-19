@@ -1,0 +1,37 @@
+table:
+  name: user_todo
+  schema: public
+object_relationships:
+- name: todo
+  using:
+    foreign_key_constraint_on: todo_id
+- name: user
+  using:
+    foreign_key_constraint_on: user_id
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - user_id
+    - todo_id
+  role: anonymous
+select_permissions:
+- permission:
+    columns:
+    - todo_id
+    - user_id
+    filter: {}
+  role: anonymous
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - todo_id
+    - user_id
+    filter: {}
+  role: anonymous
+delete_permissions:
+- permission:
+    filter: {}
+  role: anonymous
