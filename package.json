@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@apollo/client": "3.2.9",
+    "@headlessui/react": "^1.3.0",
+    "@heroicons/react": "^1.0.2",
+    "@tailwindcss/forms": "^0.3.3",
     "@types/node": "14.14.10",
     "@types/react": "17.0.0",
     "graphql": "15.4.0",
@@ -25,5 +28,10 @@
   "keywords": [
     "next"
   ],
-  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works."
+  "description": "A \"Hello World\" application with multiple pages that shows how Next.js routing works.",
+  "devDependencies": {
+    "autoprefixer": "^10.3.1",
+    "postcss": "^8.3.5",
+    "tailwindcss": "^2.2.4"
+  }
 }
