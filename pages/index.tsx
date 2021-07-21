@@ -1,24 +1,8 @@
 import Link from "next/link"
-import { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import {
-  BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  MenuAlt2Icon,
-  UsersIcon,
-  XIcon,
-} from '@heroicons/react/outline'
-import { SearchIcon } from '@heroicons/react/solid'
 
-
+import AppLayout from "../components/AppLayout"
 
 export default function IndexPage() {
-   
-
   return (
     <div>
     <Link href="/users">
@@ -28,4 +12,4 @@ export default function IndexPage() {
   )
 }
 
-IndexPage.layout = "Home";
+IndexPage.getLayout = page => <AppLayout>{page}</AppLayout>;
