@@ -50,15 +50,16 @@ else
   warn "No path to Hasura project root given, using top-level repo directory"
 fi
 
+DEFAULT_FLAGS="--disable-interactive --admin-secret=$INPUT_HASURA_ADMIN_SECRET --database-name=default"
+
 # Oh man this is so ugly, but I'm not sure if adding --endpoint with no value would nullify and break it.
 # If migrations are enabled
 if [ -n "$INPUT_HASURA_MIGRATIONS_ENABLED" ]; then
   debug "Preparing to apply migrations and metadata"
-  # If admin secret given in inputs, append it to migrate apply, else don't (use default from config.yaml)
   if [ -n "$INPUT_HASURA_ENDPOINT" ]; then
     for operation in "migrate apply" "metadata apply" "metadata reload"; do
       debug "Running $operation"
-      hasura "$operation" --endpoint "$INPUT_HASURA_ENDPOINT" --admin-secret "$INPUT_HASURA_ADMIN_SECRET" || {
+      hasura $operation $DEFAULT_FLAGS --endpoint "$INPUT_HASURA_ENDPOINT" || {
         error "Failed $operation"
         exit 1
       }
@@ -66,7 +67,7 @@ if [ -n "$INPUT_HASURA_MIGRATIONS_ENABLED" ]; then
   else
     for operation in "migrate apply" "metadata apply" "metadata reload"; do
       debug "Running $operation"
-      hasura "$operation" --admin-secret "$INPUT_HASURA_ADMIN_SECRET" || {
+      hasura $operation $DEFAULT_FLAGS || {
         error "Failed $operation"
         exit 1
       }
