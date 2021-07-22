@@ -50,7 +50,7 @@ else
   warn "No path to Hasura project root given, using top-level repo directory"
 fi
 
-DEFAULT_FLAGS="--disable-interactive --admin-secret=$INPUT_HASURA_ADMIN_SECRET --database-name=default"
+DEFAULT_FLAGS="--admin-secret=$INPUT_HASURA_ADMIN_SECRET --database-name=default"
 
 # Oh man this is so ugly, but I'm not sure if adding --endpoint with no value would nullify and break it.
 # If migrations are enabled
