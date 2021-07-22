@@ -50,28 +50,37 @@ else
   warn "No path to Hasura project root given, using top-level repo directory"
 fi
 
-DEFAULT_FLAGS="--admin-secret=$INPUT_HASURA_ADMIN_SECRET --database-name=default"
 
 # Oh man this is so ugly, but I'm not sure if adding --endpoint with no value would nullify and break it.
 # If migrations are enabled
 if [ -n "$INPUT_HASURA_MIGRATIONS_ENABLED" ]; then
   debug "Preparing to apply migrations and metadata"
   if [ -n "$INPUT_HASURA_ENDPOINT" ]; then
-    for operation in "migrate apply" "metadata apply" "metadata reload"; do
-      debug "Running $operation"
-      hasura $operation $DEFAULT_FLAGS --endpoint "$INPUT_HASURA_ENDPOINT" || {
-        error "Failed $operation"
-        exit 1
-      }
-    done 
+    hasura migrate apply --admin-secret "$INPUT_HASURA_ADMIN_SECRET" --endpoint "$INPUT_HASURA_ENDPOINT" --database-name="default" || {
+      error "Failed migrate apply"
+      exit 1
+    }
+    hasura metadata apply --admin-secret "$INPUT_HASURA_ADMIN_SECRET" --endpoint "$INPUT_HASURA_ENDPOINT" || {
+      error "Failed metadat apply"
+      exit 1
+    }
+    hasura metadata reload --admin-secret "$INPUT_HASURA_ADMIN_SECRET" --endpoint "$INPUT_HASURA_ENDPOINT" || {
+      error "Failed metadata reload"
+      exit 1
+    }
   else
-    for operation in "migrate apply" "metadata apply" "metadata reload"; do
-      debug "Running $operation"
-      hasura $operation $DEFAULT_FLAGS || {
-        error "Failed $operation"
-        exit 1
-      }
-    done 
+    hasura migrate apply --admin-secret "$INPUT_HASURA_ADMIN_SECRET" --database-name="default" || {
+      error "Failed migrate apply"
+      exit 1
+    }
+    hasura metadata apply --admin-secret "$INPUT_HASURA_ADMIN_SECRET" || {
+      error "Failed metadata apply"
+      exit 1
+    }
+    hasura metadata reload --admin-secret "$INPUT_HASURA_ADMIN_SECRET" || {
+      error "Failed metadata reload"
+      exit 1
+    }
   fi
 else
   warn "Migrations not enabled, skipping"
