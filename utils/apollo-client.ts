@@ -4,8 +4,19 @@ import { ApolloClient, HttpLink, InMemoryCache, split } from "@apollo/client"
 import { WebSocketLink } from "@apollo/client/link/ws"
 import { getMainDefinition } from "@apollo/client/utilities"
 import { setContext } from "@apollo/client/link/context"
+import { getAccessToken } from "./access-token"
 
 let apolloClient
+
+function getHeaders() {
+  console.log("getHeaders called")
+  const headers = {} as HeadersInit
+  const token = getAccessToken()
+  console.log({ token })
+  if (token) headers["Authorization"] = `Bearer ${token}`
+  console.log("getHeaders, headers = ", headers)
+  return headers
+}
 
 function createApolloClient() {
   // HTTP Link
@@ -15,11 +26,10 @@ function createApolloClient() {
 
   // Adds Authentication Headers on HTTP as well as was requests
   const authLink = setContext((_, { headers }) => {
-    // const token = getToken();
     return {
       headers: {
         ...headers,
-        // authorization: token,
+        ...getHeaders(),
       },
     }
   })
@@ -33,6 +43,11 @@ function createApolloClient() {
         options: {
           reconnect: true,
           lazy: true,
+          connectionParams: async () => {
+            return {
+              headers: getHeaders(),
+            }
+          },
         },
       })
     : null

@@ -1,0 +1,26 @@
+type Query {
+  login (
+    params: LoginInput!
+  ): JwtToken
+}
+
+type Mutation {
+  signup (
+    params: SignupInput!
+  ): JwtToken
+}
+
+input SignupInput {
+  username : String!
+  password : String!
+}
+
+input LoginInput {
+  username : String!
+  password : String!
+}
+
+type JwtToken {
+  token : String!
+}
+

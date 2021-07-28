@@ -14,7 +14,7 @@ import {
 import { IndigoButton } from "./IndigoButton"
 
 import { useTypedMutation, useTypedSubscription } from "../utils/gql-zeus-hooks"
-import { todo, $ } from "../utils/generated/graphql-zeus"
+import { todo, $, user } from "../utils/generated/graphql-zeus"
 
 type SlideOverMode = "CREATE" | "EDIT"
 
@@ -27,6 +27,7 @@ interface SlideOverProps {
   handleSaveButtonClick: () => void
   handleCreateButtonClick: () => void
   handleOnUserAddedToTodo: (todoId: number, userId: number) => void
+  handleOnUserRemovedFromTodo: (todoId: number, userId: number) => void
 }
 
 function TodoEditorSidePanel(props: SlideOverProps) {
@@ -169,6 +170,12 @@ function TodoEditorSidePanel(props: SlideOverProps) {
                                   }
                                   href="#"
                                   className="flex-shrink-0 rounded-full hover:opacity-75"
+                                  onClick={() => {
+                                    props.handleOnUserRemovedFromTodo(
+                                      userTodo.todo_id,
+                                      userTodo.user_id,
+                                    )
+                                  }}
                                 >
                                   <img
                                     className="inline-block w-8 h-8 rounded-full"
@@ -355,14 +362,6 @@ function TodoTable(props: TableProps) {
                             />
                           </div>
                         ))}
-                        {/* <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {person.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {person.email}
-                          </div>
-                        </div> */}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -415,6 +414,79 @@ function TodoTable(props: TableProps) {
   )
 }
 
+interface ModalProps {
+  isOpen: boolean
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function Modal(props: ModalProps) {
+  return (
+    <Transition appear show={props.isOpen} as={Fragment}>
+      <Dialog
+        as="div"
+        className="fixed inset-0 z-10 overflow-y-auto"
+        onClose={() => props.setIsOpen(false)}
+      >
+        <div className="min-h-screen px-4 text-center">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="fixed inset-0" />
+          </Transition.Child>
+
+          {/* This element is to trick the browser into centering the modal contents. */}
+          <span
+            className="inline-block h-screen align-middle"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <Dialog.Title
+                as="h3"
+                className="text-lg font-medium leading-6 text-gray-900"
+              >
+                Payment successful
+              </Dialog.Title>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">
+                  Your payment has been successfully submitted. We’ve sent your
+                  an email with all of the details of your order.
+                </p>
+              </div>
+
+              <div className="mt-4">
+                <button
+                  type="button"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                  onClick={() => props.setIsOpen(false)}
+                >
+                  Got it, thanks!
+                </button>
+              </div>
+            </div>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
+  )
+}
+
 // Bit of a hack to share the response data type between components
 // Really don't recommend this, but if you need to share a queryhook-based response type there's not a lot of options
 const useTodosSubscription = () =>
@@ -428,6 +500,8 @@ const useTodosSubscription = () =>
         user_todos: [
           {},
           {
+            todo_id: true,
+            user_id: true,
             user: {
               id: true,
               username: true,
@@ -439,6 +513,7 @@ const useTodosSubscription = () =>
   })
 
 export default function IndexPage() {
+  const [modalIsOpen, setModalIsOpen] = useState(false)
   const [slideOverIsOpen, setSlideOverIsOpen] = useState(false)
   const [slideOverMode, setSlideOverMode] = useState("CREATE" as SlideOverMode)
   const [currentlyEdittedTodo, setCurrentlyEdittedTodo] = useState({} as todo)
@@ -503,6 +578,18 @@ export default function IndexPage() {
     ],
   })
 
+  const [removeUserFromTodo] = useTypedMutation({
+    delete_user_todo_by_pk: [
+      {
+        user_id: $`user_id`,
+        todo_id: $`todo_id`,
+      },
+      {
+        todo_id: true,
+      },
+    ],
+  })
+
   const MainContent = () => {
     switch (true) {
       case loading:
@@ -536,6 +623,7 @@ export default function IndexPage() {
 
   return (
     <div>
+      <Modal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
       <section className="flex justify-end p-2">
         <IndigoButton
           onClick={() => {
@@ -571,6 +659,18 @@ export default function IndexPage() {
         }}
         handleOnUserAddedToTodo={(todoId, userId) => {
           addUserToTodoByPk({
+            variables: {
+              user_id: userId,
+              todo_id: todoId,
+            },
+          })
+        }}
+        handleOnUserRemovedFromTodo={(todoId, userId) => {
+          console.log("called handleOnUserRemovedFromTodo with", {
+            todoId,
+            userId,
+          })
+          removeUserFromTodo({
             variables: {
               user_id: userId,
               todo_id: todoId,

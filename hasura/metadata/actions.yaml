@@ -1,6 +1,21 @@
-actions: []
+actions:
+- name: login
+  definition:
+    kind: ""
+    handler: http://host.docker.internal:3000/api/actions/auth/login
+  permissions:
+  - role: anonymous
+- name: signup
+  definition:
+    kind: synchronous
+    handler: http://host.docker.internal:3000/api/actions/auth/signup
+  permissions:
+  - role: anonymous
 custom_types:
   enums: []
-  input_objects: []
-  objects: []
+  input_objects:
+  - name: SignupInput
+  - name: LoginInput
+  objects:
+  - name: JwtToken
   scalars: []

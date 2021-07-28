@@ -26,6 +26,14 @@ export type ValueTypes = {
 	_neq?:number,
 	_nin?:number[]
 };
+	["JwtToken"]: AliasType<{
+	token?:true,
+		__typename?: true
+}>;
+	["LoginInput"]: {
+	password:string,
+	username:string
+};
 	/** mutation root */
 ["mutation_root"]: AliasType<{
 delete_todo?: [{	/** filter the rows which have to be deleted */
@@ -55,6 +63,7 @@ insert_user_todo?: [{	/** the rows to be inserted */
 insert_user_todo_one?: [{	/** the row to be inserted */
 	object:ValueTypes["user_todo_insert_input"],	/** on conflict condition */
 	on_conflict?:ValueTypes["user_todo_on_conflict"]},ValueTypes["user_todo"]],
+signup?: [{	params:ValueTypes["SignupInput"]},ValueTypes["JwtToken"]],
 update_todo?: [{	/** increments the numeric columns with given value of the filtered values */
 	_inc?:ValueTypes["todo_inc_input"],	/** sets the columns of the filtered rows to the given values */
 	_set?:ValueTypes["todo_set_input"],	/** filter the rows which have to be updated */
@@ -81,6 +90,7 @@ update_user_todo_by_pk?: [{	/** increments the numeric columns with given value 
 	/** column ordering options */
 ["order_by"]:order_by;
 	["query_root"]: AliasType<{
+login?: [{	params:ValueTypes["LoginInput"]},ValueTypes["JwtToken"]],
 todo?: [{	/** distinct select on columns */
 	distinct_on?:ValueTypes["todo_select_column"][],	/** limit the number of rows returned */
 	limit?:number,	/** skip the first n rows. Use only with order_by */
@@ -122,6 +132,10 @@ user_todo_aggregate?: [{	/** distinct select on columns */
 user_todo_by_pk?: [{	todo_id:number,	user_id:number},ValueTypes["user_todo"]],
 		__typename?: true
 }>;
+	["SignupInput"]: {
+	password:string,
+	username:string
+};
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 	_eq?:string,
@@ -355,6 +369,7 @@ count?: [{	columns?:ValueTypes["todo_select_column"][],	distinct?:boolean},true]
 	/** columns and relationships of "user" */
 ["user"]: AliasType<{
 	id?:true,
+	password?:true,
 user_todos?: [{	/** distinct select on columns */
 	distinct_on?:ValueTypes["user_todo_select_column"][],	/** limit the number of rows returned */
 	limit?:number,	/** skip the first n rows. Use only with order_by */
@@ -402,6 +417,7 @@ count?: [{	columns?:ValueTypes["user_select_column"][],	distinct?:boolean},true]
 	_not?:ValueTypes["user_bool_exp"],
 	_or?:ValueTypes["user_bool_exp"][],
 	id?:ValueTypes["Int_comparison_exp"],
+	password?:ValueTypes["String_comparison_exp"],
 	user_todos?:ValueTypes["user_todo_bool_exp"],
 	username?:ValueTypes["String_comparison_exp"]
 };
@@ -414,18 +430,21 @@ count?: [{	columns?:ValueTypes["user_select_column"][],	distinct?:boolean},true]
 	/** input type for inserting data into table "user" */
 ["user_insert_input"]: {
 	id?:number,
+	password?:string,
 	user_todos?:ValueTypes["user_todo_arr_rel_insert_input"],
 	username?:string
 };
 	/** aggregate max on columns */
 ["user_max_fields"]: AliasType<{
 	id?:true,
+	password?:true,
 	username?:true,
 		__typename?: true
 }>;
 	/** aggregate min on columns */
 ["user_min_fields"]: AliasType<{
 	id?:true,
+	password?:true,
 	username?:true,
 		__typename?: true
 }>;
@@ -452,6 +471,7 @@ count?: [{	columns?:ValueTypes["user_select_column"][],	distinct?:boolean},true]
 	/** Ordering options when selecting data from "user". */
 ["user_order_by"]: {
 	id?:ValueTypes["order_by"],
+	password?:ValueTypes["order_by"],
 	user_todos_aggregate?:ValueTypes["user_todo_aggregate_order_by"],
 	username?:ValueTypes["order_by"]
 };
@@ -464,6 +484,7 @@ count?: [{	columns?:ValueTypes["user_select_column"][],	distinct?:boolean},true]
 	/** input type for updating data in table "user" */
 ["user_set_input"]: {
 	id?:number,
+	password?:string,
 	username?:string
 };
 	/** aggregate stddev on columns */
@@ -750,6 +771,14 @@ export type PartialObjects = {
 	_neq?:number,
 	_nin?:number[]
 },
+	["JwtToken"]: {
+		__typename?: "JwtToken";
+			token?:string
+	},
+	["LoginInput"]: {
+	password:string,
+	username:string
+},
 	/** mutation root */
 ["mutation_root"]: {
 		__typename?: "mutation_root";
@@ -777,6 +806,7 @@ export type PartialObjects = {
 	insert_user_todo?:PartialObjects["user_todo_mutation_response"],
 			/** insert a single row into the table: "user_todo" */
 	insert_user_todo_one?:PartialObjects["user_todo"],
+			signup?:PartialObjects["JwtToken"],
 			/** update data of the table: "todo" */
 	update_todo?:PartialObjects["todo_mutation_response"],
 			/** update single row of the table: "todo" */
@@ -794,6 +824,7 @@ export type PartialObjects = {
 ["order_by"]:order_by,
 	["query_root"]: {
 		__typename?: "query_root";
+			login?:PartialObjects["JwtToken"],
 			/** fetch data from the table: "todo" */
 	todo?:PartialObjects["todo"][],
 			/** fetch aggregated fields from the table: "todo" */
@@ -813,6 +844,10 @@ export type PartialObjects = {
 			/** fetch data from the table: "user_todo" using primary key columns */
 	user_todo_by_pk?:PartialObjects["user_todo"]
 	},
+	["SignupInput"]: {
+	password:string,
+	username:string
+},
 	/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 ["String_comparison_exp"]: {
 	_eq?:string,
@@ -1018,6 +1053,7 @@ export type PartialObjects = {
 ["user"]: {
 		__typename?: "user";
 			id?:number,
+			password?:string,
 			/** An array relationship */
 	user_todos?:PartialObjects["user_todo"][],
 			/** An aggregate relationship */
@@ -1056,6 +1092,7 @@ export type PartialObjects = {
 	_not?:PartialObjects["user_bool_exp"],
 	_or?:PartialObjects["user_bool_exp"][],
 	id?:PartialObjects["Int_comparison_exp"],
+	password?:PartialObjects["String_comparison_exp"],
 	user_todos?:PartialObjects["user_todo_bool_exp"],
 	username?:PartialObjects["String_comparison_exp"]
 },
@@ -1068,6 +1105,7 @@ export type PartialObjects = {
 	/** input type for inserting data into table "user" */
 ["user_insert_input"]: {
 	id?:number,
+	password?:string,
 	user_todos?:PartialObjects["user_todo_arr_rel_insert_input"],
 	username?:string
 },
@@ -1075,12 +1113,14 @@ export type PartialObjects = {
 ["user_max_fields"]: {
 		__typename?: "user_max_fields";
 			id?:number,
+			password?:string,
 			username?:string
 	},
 	/** aggregate min on columns */
 ["user_min_fields"]: {
 		__typename?: "user_min_fields";
 			id?:number,
+			password?:string,
 			username?:string
 	},
 	/** response of any mutation on the table "user" */
@@ -1106,6 +1146,7 @@ export type PartialObjects = {
 	/** Ordering options when selecting data from "user". */
 ["user_order_by"]: {
 	id?:PartialObjects["order_by"],
+	password?:PartialObjects["order_by"],
 	user_todos_aggregate?:PartialObjects["user_todo_aggregate_order_by"],
 	username?:PartialObjects["order_by"]
 },
@@ -1118,6 +1159,7 @@ export type PartialObjects = {
 	/** input type for updating data in table "user" */
 ["user_set_input"]: {
 	id?:number,
+	password?:string,
 	username?:string
 },
 	/** aggregate stddev on columns */
@@ -1407,6 +1449,16 @@ export type Int_comparison_exp = {
 	_nin?:number[]
 }
 
+export type JwtToken = {
+	__typename?: "JwtToken",
+	token:string
+}
+
+export type LoginInput = {
+		password:string,
+	username:string
+}
+
 /** mutation root */
 export type mutation_root = {
 	__typename?: "mutation_root",
@@ -1434,6 +1486,7 @@ export type mutation_root = {
 	insert_user_todo?:user_todo_mutation_response,
 	/** insert a single row into the table: "user_todo" */
 	insert_user_todo_one?:user_todo,
+	signup?:JwtToken,
 	/** update data of the table: "todo" */
 	update_todo?:todo_mutation_response,
 	/** update single row of the table: "todo" */
@@ -1460,6 +1513,7 @@ export enum order_by {
 
 export type query_root = {
 	__typename?: "query_root",
+	login?:JwtToken,
 	/** fetch data from the table: "todo" */
 	todo:todo[],
 	/** fetch aggregated fields from the table: "todo" */
@@ -1478,6 +1532,11 @@ export type query_root = {
 	user_todo_aggregate:user_todo_aggregate,
 	/** fetch data from the table: "user_todo" using primary key columns */
 	user_todo_by_pk?:user_todo
+}
+
+export type SignupInput = {
+		password:string,
+	username:string
 }
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -1722,6 +1781,7 @@ export type todo_variance_fields = {
 export type user = {
 	__typename?: "user",
 	id:number,
+	password:string,
 	/** An array relationship */
 	user_todos:user_todo[],
 	/** An aggregate relationship */
@@ -1764,6 +1824,7 @@ export type user_bool_exp = {
 	_not?:user_bool_exp,
 	_or?:user_bool_exp[],
 	id?:Int_comparison_exp,
+	password?:String_comparison_exp,
 	user_todos?:user_todo_bool_exp,
 	username?:String_comparison_exp
 }
@@ -1782,6 +1843,7 @@ export type user_inc_input = {
 /** input type for inserting data into table "user" */
 export type user_insert_input = {
 		id?:number,
+	password?:string,
 	user_todos?:user_todo_arr_rel_insert_input,
 	username?:string
 }
@@ -1790,6 +1852,7 @@ export type user_insert_input = {
 export type user_max_fields = {
 	__typename?: "user_max_fields",
 	id?:number,
+	password?:string,
 	username?:string
 }
 
@@ -1797,6 +1860,7 @@ export type user_max_fields = {
 export type user_min_fields = {
 	__typename?: "user_min_fields",
 	id?:number,
+	password?:string,
 	username?:string
 }
 
@@ -1826,6 +1890,7 @@ export type user_on_conflict = {
 /** Ordering options when selecting data from "user". */
 export type user_order_by = {
 		id?:order_by,
+	password?:order_by,
 	user_todos_aggregate?:user_todo_aggregate_order_by,
 	username?:order_by
 }
@@ -1838,12 +1903,14 @@ export type user_pk_columns_input = {
 /** select columns of table "user" */
 export enum user_select_column {
 	id = "id",
+	password = "password",
 	username = "username"
 }
 
 /** input type for updating data in table "user" */
 export type user_set_input = {
 		id?:number,
+	password?:string,
 	username?:string
 }
 
@@ -2138,6 +2205,7 @@ export type user_todo_variance_order_by = {
 /** update columns of table "user" */
 export enum user_update_column {
 	id = "id",
+	password = "password",
 	username = "username"
 }
 
@@ -2290,6 +2358,20 @@ export const AllTypesProps: Record<string,any> = {
 			required:true
 		}
 	},
+	LoginInput:{
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
 	mutation_root:{
 		delete_todo:{
 			where:{
@@ -2429,6 +2511,14 @@ export const AllTypesProps: Record<string,any> = {
 				required:false
 			}
 		},
+		signup:{
+			params:{
+				type:"SignupInput",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		update_todo:{
 			_inc:{
 				type:"todo_inc_input",
@@ -2552,6 +2642,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	order_by: "enum",
 	query_root:{
+		login:{
+			params:{
+				type:"LoginInput",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
 		todo:{
 			distinct_on:{
 				type:"todo_select_column",
@@ -2773,6 +2871,20 @@ export const AllTypesProps: Record<string,any> = {
 				arrayRequired:false,
 				required:true
 			}
+		}
+	},
+	SignupInput:{
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	String_comparison_exp:{
@@ -3473,6 +3585,12 @@ export const AllTypesProps: Record<string,any> = {
 			arrayRequired:false,
 			required:false
 		},
+		password:{
+			type:"String_comparison_exp",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		user_todos:{
 			type:"user_todo_bool_exp",
 			array:false,
@@ -3498,6 +3616,12 @@ export const AllTypesProps: Record<string,any> = {
 	user_insert_input:{
 		id:{
 			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		password:{
+			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:false
@@ -3556,6 +3680,12 @@ export const AllTypesProps: Record<string,any> = {
 			arrayRequired:false,
 			required:false
 		},
+		password:{
+			type:"order_by",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		user_todos_aggregate:{
 			type:"user_todo_aggregate_order_by",
 			array:false,
@@ -3581,6 +3711,12 @@ export const AllTypesProps: Record<string,any> = {
 	user_set_input:{
 		id:{
 			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		password:{
+			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:false
@@ -3995,6 +4131,9 @@ export const AllTypesProps: Record<string,any> = {
 }
 
 export const ReturnTypes: Record<string,any> = {
+	JwtToken:{
+		token:"String"
+	},
 	mutation_root:{
 		delete_todo:"todo_mutation_response",
 		delete_todo_by_pk:"todo",
@@ -4008,6 +4147,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_user_one:"user",
 		insert_user_todo:"user_todo_mutation_response",
 		insert_user_todo_one:"user_todo",
+		signup:"JwtToken",
 		update_todo:"todo_mutation_response",
 		update_todo_by_pk:"todo",
 		update_user:"user_mutation_response",
@@ -4016,6 +4156,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_user_todo_by_pk:"user_todo"
 	},
 	query_root:{
+		login:"JwtToken",
 		todo:"todo",
 		todo_aggregate:"todo_aggregate",
 		todo_by_pk:"todo",
@@ -4099,6 +4240,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	user:{
 		id:"Int",
+		password:"String",
 		user_todos:"user_todo",
 		user_todos_aggregate:"user_todo_aggregate",
 		username:"String"
@@ -4125,10 +4267,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	user_max_fields:{
 		id:"Int",
+		password:"String",
 		username:"String"
 	},
 	user_min_fields:{
 		id:"Int",
+		password:"String",
 		username:"String"
 	},
 	user_mutation_response:{

@@ -3,9 +3,9 @@ import { useStoreActions } from "../store"
 import { setAccessToken } from "../utils/access-token"
 
 import { $ } from "../utils/generated/graphql-zeus"
-import { useTypedLazyQuery, useTypedMutation } from "../utils/gql-zeus-hooks"
+import { useTypedMutation } from "../utils/gql-zeus-hooks"
 
-export default function Login() {
+export default function Signup() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -16,8 +16,8 @@ export default function Login() {
     (actions) => actions.showErrorNotification,
   )
 
-  const [login, loginResults] = useTypedLazyQuery({
-    login: [
+  const [signup] = useTypedMutation({
+    signup: [
       {
         params: {
           username: $`username`,
@@ -33,24 +33,23 @@ export default function Login() {
   async function signupHandler(e) {
     e.preventDefault()
 
-    await login({
+    const result = await signup({
       variables: {
         username,
         password,
       },
     })
-
-    if (loginResults.error) {
+    if (result.errors) {
       showErrorNotification({
         title: "Error during Signup",
-        message: loginResults?.error?.message,
+        message: result.errors.map((it) => it.message).join("\n"),
       })
     } else {
       showSuccessNotification({
         title: "Successfully Signed up",
         message: "You may now login",
       })
-      const jwt = loginResults?.data?.login?.token
+      const jwt = result.data.signup.token
       setAccessToken(jwt)
     }
   }
@@ -64,7 +63,7 @@ export default function Login() {
           alt="Workflow"
         />
         <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900">
-          Log In
+          Sign Up
         </h2>
       </div>
 
@@ -116,7 +115,7 @@ export default function Login() {
                 className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 onClick={signupHandler}
               >
-                Login
+                Register
               </button>
             </div>
           </form>

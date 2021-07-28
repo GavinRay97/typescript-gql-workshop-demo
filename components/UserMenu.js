@@ -4,30 +4,27 @@ import { BellIcon } from "@heroicons/react/outline"
 import { Menu, Transition } from "@headlessui/react"
 
 import classNames from "../utils/helpers/classNames"
+import { setAccessToken } from "../utils/access-token"
 
-const userNavigation = [
-  { name: "Your Profile", href: "#" },
-  { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
-]
+const userNavigation = [{ name: "Sign out", href: "#" }]
 
 export default function UserMenu() {
   return (
-    <div className="ml-4 flex items-center md:ml-6">
-      <button className="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+    <div className="flex items-center ml-4 md:ml-6">
+      <button className="p-1 text-gray-400 bg-white rounded-full hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         <span className="sr-only">View notifications</span>
-        <BellIcon className="h-6 w-6" aria-hidden="true" />
+        <BellIcon className="w-6 h-6" aria-hidden="true" />
       </button>
 
       {/* Profile dropdown */}
-      <Menu as="div" className="ml-3 relative">
+      <Menu as="div" className="relative ml-3">
         {({ open }) => (
           <>
             <div>
-              <Menu.Button className="max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <Menu.Button className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <span className="sr-only">Open user menu</span>
                 <img
-                  className="h-8 w-8 rounded-full"
+                  className="w-8 h-8 rounded-full"
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt=""
                 />
@@ -45,7 +42,7 @@ export default function UserMenu() {
             >
               <Menu.Items
                 static
-                className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none"
+                className="absolute right-0 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
                 {userNavigation.map((item) => (
                   <Menu.Item key={item.name}>
@@ -56,6 +53,13 @@ export default function UserMenu() {
                           active ? "bg-gray-100" : "",
                           "block py-2 px-4 text-sm text-gray-700",
                         )}
+                        onClick={() => {
+                          console.log("CALLED", item)
+                          if (item.name == "Sign out") {
+                            setAccessToken(null)
+                            window.location.href = "/login"
+                          }
+                        }}
                       >
                         {item.name}
                       </a>

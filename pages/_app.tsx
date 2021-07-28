@@ -1,5 +1,4 @@
-
-import React from "react";
+import React from "react"
 import { AppProps } from "next/app"
 import { useApollo } from "../utils/apollo-client"
 import { ApolloProvider } from "@apollo/client"
@@ -10,16 +9,23 @@ import { ApolloProvider } from "@apollo/client"
 //   Component: Page
 // }
 
-import '../styles/global.css';
+import "../styles/global.css"
 
+import { NotificationProvider } from "./NotificationProvider"
+
+import { store } from "../store"
+import { StoreProvider } from "easy-peasy"
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const getLayout = Component.getLayout || (page => page)
+  const getLayout = Component.getLayout || ((page) => page)
   const client = useApollo(pageProps.initialApolloState)
 
   return (
     <ApolloProvider client={client}>
-      {getLayout(<Component {...pageProps} />)}
+      <StoreProvider store={store}>
+        {getLayout(<Component {...pageProps} />)}
+        <NotificationProvider />
+      </StoreProvider>
     </ApolloProvider>
   )
 }
