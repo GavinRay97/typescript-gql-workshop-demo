@@ -17,6 +17,9 @@ services:
       - "postgres"
     restart: always
     environment:
+      # This exists for compatibility with simultaneous Hasura Cloud app
+      # You can set the HEROKU_DB_URL in your local Compose environment to point instead at the Postgres container
+      # Then it'll work in both places
       HEROKU_DB_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
       ## enable the console served by server
