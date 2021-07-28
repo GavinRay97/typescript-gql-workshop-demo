@@ -1,27 +1,41 @@
 import React from "react"
+import { useRouter } from "next/router"
+import Link from "next/link"
 import { Dialog, Transition } from "@headlessui/react"
 import classNames from "../utils/helpers/classNames"
 
 import {
-  CalendarIcon,
-  ChartBarIcon,
   FolderIcon,
   HomeIcon,
-  InboxIcon,
   UsersIcon,
-  XIcon
-} from '@heroicons/react/outline'
+  XIcon,
+} from "@heroicons/react/outline"
 
-const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
-]
+const Sidebar: React.FC<{ open: boolean; onClose: any }> = ({
+  open,
+  onClose,
+}) => {
+  const [myTasks] = React.useState(5)
+  const [teamTasks] = React.useState(24)
 
-const Sidebar: React.FC<{ open: boolean, onClose: any }> = ({open, onClose}) => {
+  const { pathname } = useRouter()
+
+  const navigation = [
+    {
+      name: "My Tasks",
+      href: "/",
+      icon: HomeIcon,
+      alerts: myTasks,
+    },
+    {
+      name: "Team Tasks",
+      href: "/team-tasks",
+      icon: UsersIcon,
+      alerts: teamTasks,
+    },
+    { name: "Projects", href: "/projects", icon: FolderIcon, current: false },
+    // { name: "Metrics", href: "#", icon: ChartBarIcon, current: false },
+  ]
   return (
     <React.Fragment>
       <Transition.Root show={open} as={React.Fragment}>
@@ -82,27 +96,27 @@ const Sidebar: React.FC<{ open: boolean, onClose: any }> = ({open, onClose}) => 
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
                 <nav className="px-2 space-y-1">
                   {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-100 text-gray-900"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                        "group rounded-md py-2 px-2 flex items-center text-base font-medium",
-                      )}
-                    >
-                      <item.icon
+                    <Link href={item.href} key={item.name}>
+                      <a
                         className={classNames(
-                          item.current
-                            ? "text-gray-500"
-                            : "text-gray-400 group-hover:text-gray-500",
-                          "mr-4 flex-shrink-0 h-6 w-6",
+                          pathname === item.href
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                          "group rounded-md py-2 px-2 flex items-center text-base font-medium",
                         )}
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </a>
+                      >
+                        <item.icon
+                          className={classNames(
+                            item.current
+                              ? "text-gray-500"
+                              : "text-gray-400 group-hover:text-gray-500",
+                            "mr-4 flex-shrink-0 h-6 w-6",
+                          )}
+                          aria-hidden="true"
+                        />
+                        {item.name}
+                      </a>
+                    </Link>
                   ))}
                 </nav>
               </div>
@@ -128,27 +142,32 @@ const Sidebar: React.FC<{ open: boolean, onClose: any }> = ({open, onClose}) => 
             <div className="flex-grow mt-5 flex flex-col">
               <nav className="flex-1 bg-white px-2 space-y-1">
                 {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                      "group rounded-md py-2 px-2 flex items-center text-sm font-medium",
-                    )}
-                  >
-                    <item.icon
+                  <Link href={item.href} key={item.name}>
+                    <a
                       className={classNames(
-                        item.current
-                          ? "text-gray-500"
-                          : "text-gray-400 group-hover:text-gray-500",
-                        "mr-3 flex-shrink-0 h-6 w-6",
+                        pathname === item.href
+                          ? "bg-gray-100 text-gray-900"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                        "group rounded-md py-2 px-2 flex items-center text-sm font-medium",
                       )}
-                      aria-hidden="true"
-                    />
-                    {item.name}
-                  </a>
+                    >
+                      <item.icon
+                        className={classNames(
+                          item.current
+                            ? "text-gray-500"
+                            : "text-gray-400 group-hover:text-gray-500",
+                          "mr-3 flex-shrink-0 h-6 w-6",
+                        )}
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                      {item.alerts && (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800 ml-auto">
+                          {item.alerts}
+                        </span>
+                      )}
+                    </a>
+                  </Link>
                 ))}
               </nav>
             </div>

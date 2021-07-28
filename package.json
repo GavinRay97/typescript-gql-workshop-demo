@@ -6,7 +6,8 @@
     "build": "next build",
     "start": "next start",
     "post-update": "yarn upgrade --latest",
-    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./utils/generated --ts"
+    "generate-gql-client": "zeus http://localhost:8080/v1/graphql ./utils/generated --ts",
+    "generate-gql-client-cloud": "zeus https://typescript-gql-workshop.hasura.app/v1/graphql ./utils/generated --ts --header=x-hasura-admin-secret:PqzMl8mhqiaJhnRcjUuotfEXIcye0gxxuxXelI3F9mjnA4kznJwXxkHFLUDcsw63"
   },
   "dependencies": {
     "@apollo/client": "3.2.9",
