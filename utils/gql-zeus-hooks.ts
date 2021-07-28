@@ -1,72 +1,64 @@
 import {
+  ApolloClient,
   gql,
+  LazyQueryHookOptions,
+  MutationHookOptions,
+  MutationOptions,
+  NormalizedCacheObject,
+  QueryHookOptions,
+  QueryOptions,
+  SubscriptionHookOptions,
+  SubscriptionOptions,
+  useLazyQuery,
   useMutation,
   useQuery,
   useSubscription,
-  useLazyQuery,
 } from "@apollo/client"
 
-import type {
-  LazyQueryHookOptions,
-  MutationHookOptions,
-  QueryHookOptions,
-  SubscriptionHookOptions,
-  NormalizedCacheObject,
-  QueryOptions,
-  ApolloClient,
-  MutationOptions,
-  SubscriptionOptions,
-} from "@apollo/client"
+import {
+  $,
+  MapType,
+  mutation_root,
+  query_root,
+  subscription_root,
+  ValueTypes,
+  Zeus,
+} from "./generated/graphql-zeus"
 
-import { Zeus } from "./generated/zeus/index"
-import type { MapType, ValueTypes } from "./generated/zeus/index"
+export { $ as $ }
 
-
-type QueryRoot = ValueTypes["query_root"]
-type MutationRoot = ValueTypes["mutation_root"]
-type SubscriptionRoot = ValueTypes["subscription_root"]
-
-export function useTypedQuery<Query extends QueryRoot>(
-  query: Query,
-  options?: QueryHookOptions<MapType<QueryRoot, Query>, Record<string, any>>,
+export function useTypedQuery<Q extends ValueTypes["query_root"]>(
+  query: Q,
+  options?: QueryHookOptions<MapType<query_root, Q>, Record<string, any>>,
 ) {
-  return useQuery<MapType<QueryRoot, Query>>(gql(Zeus.query(query)), options)
+  return useQuery<MapType<query_root, Q>>(gql(Zeus.query(query)), options)
 }
 
-export function useTypedLazyQuery<Query extends QueryRoot>(
-  query: Query,
-  options?: LazyQueryHookOptions<
-    MapType<QueryRoot, Query>,
-    Record<string, any>
-  >,
+export function useTypedLazyQuery<Q extends ValueTypes["query_root"]>(
+  query: Q,
+  options?: LazyQueryHookOptions<MapType<query_root, Q>, Record<string, any>>,
 ) {
-  return useLazyQuery<MapType<QueryRoot, Query>>(
-    gql(Zeus.query(query)),
-    options,
-  )
+  return useLazyQuery<MapType<query_root, Q>>(gql(Zeus.query(query)), options)
 }
 
-export function useTypedMutation<Mutation extends MutationRoot>(
-  mutation: Mutation,
-  options?: MutationHookOptions<
-    MapType<MutationRoot, Mutation>,
-    Record<string, any>
-  >,
+export function useTypedMutation<Q extends ValueTypes["mutation_root"]>(
+  mutation: Q,
+  options?: MutationHookOptions<MapType<mutation_root, Q>, Record<string, any>>,
 ) {
-  return useMutation<MapType<MutationRoot, Mutation>>(
+  return useMutation<MapType<mutation_root, Q>>(
     gql(Zeus.mutation(mutation)),
     options,
   )
 }
 
-export function useTypedSubscription<Subscription extends SubscriptionRoot>(
-  subscription: Subscription,
+export function useTypedSubscription<Q extends ValueTypes["subscription_root"]>(
+  subscription: Q,
   options?: SubscriptionHookOptions<
-    MapType<SubscriptionRoot, Subscription>,
+    MapType<subscription_root, Q>,
     Record<string, any>
   >,
 ) {
-  return useSubscription<MapType<SubscriptionRoot, Subscription>>(
+  return useSubscription<MapType<subscription_root, Q>>(
     gql(Zeus.subscription(subscription)),
     options,
   )
@@ -77,42 +69,37 @@ export function useTypedSubscription<Subscription extends SubscriptionRoot>(
 // instance currently constructed/available in-context
 // for making type-inferenced queries
 
-export function useTypedClientQuery<Query extends QueryRoot>(
+export function useTypedClientQuery<Q extends ValueTypes["query_root"]>(
   apollo: ApolloClient<NormalizedCacheObject>,
-  query: Query,
-  options?: QueryOptions<MapType<QueryRoot, Query>, Record<string, any>>,
+  query: Q,
+  options?: QueryOptions<MapType<query_root, Q>, Record<string, any>>,
 ) {
-  return apollo.query<MapType<QueryRoot, Query>>({
+  return apollo.query<MapType<query_root, Q>>({
     query: gql(Zeus.query(query)),
     ...options,
   })
 }
 
-export function useTypedClientMutation<Mutation extends MutationRoot>(
+export function useTypedClientMutation<Q extends ValueTypes["mutation_root"]>(
   apollo: ApolloClient<NormalizedCacheObject>,
-  mutation: Mutation,
-  options?: MutationOptions<
-    MapType<MutationRoot, Mutation>,
-    Record<string, any>
-  >,
+  mutation: Q,
+  options?: MutationOptions<MapType<mutation_root, Q>, Record<string, any>>,
 ) {
-  return apollo.mutate<MapType<MutationRoot, Mutation>>({
+  return apollo.mutate<MapType<mutation_root, Q>>({
     mutation: gql(Zeus.mutation(mutation)),
     ...options,
   })
 }
 
-export function useTypedClientSubscription<
-  Subscription extends SubscriptionRoot,
->(
+function useTypedClientSubscription<Q extends ValueTypes["subscription_root"]>(
   apollo: ApolloClient<NormalizedCacheObject>,
-  subscription: Subscription,
+  subscription: Q,
   options?: SubscriptionOptions<
-    MapType<SubscriptionRoot, Subscription>,
+    MapType<subscription_root, Q>,
     Record<string, any>
   >,
 ) {
-  return apollo.subscribe<MapType<SubscriptionRoot, Subscription>>({
+  return apollo.subscribe<MapType<subscription_root, Q>>({
     query: gql(Zeus.subscription(subscription)),
     ...options,
   })
